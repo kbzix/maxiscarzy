@@ -1,0 +1,160 @@
+var left=0;
+var right=0;
+var down=0;
+var up=0;
+var playerspeed=3;
+var xpos=10;
+var ypos=235;
+var jumpspeed=6;
+
+(function () {
+	var sky = document.createElement('div');
+	var body = document.getElementsByTagName('body')[0];
+	body.appendChild(sky);
+
+	sky.style.position = 'fixed';
+	sky.style.top = '0px';
+	sky.style.left = '0px';
+	sky.style.margin = '10px';
+	sky.style.paddingTop = '10px';
+	sky.style.width = '300px';
+	sky.style.height = '300px';
+	sky.style.zIndex = 10000;
+	sky.style.opacity = 1;
+	sky.style.color = 'blue';
+	sky.style.backgroundColor = 'blue';
+	sky.style.border = '0px solid white';
+	sky.style.textAlign = 'center';
+	sky.id = 'sky';
+	sky.style.display = 'block';
+}());
+
+function colliding(rect1x,rect1y,rect1width,rect1height,rect2x,rect2y,rect2width,rect2height){
+    return (rect1x < rect2x + rect2width && rect1x + rect1width > rect2x && rect1y < rect2y + rect2height && rect1y + rect1height > rect2y);
+}
+
+setInterval(colliding,5);
+(function () {
+	var char = document.createElement('div');
+	var body = document.getElementsByTagName('body')[0];
+	body.appendChild(char);
+
+	char.style.position = 'fixed';
+	char.style.top = ''+ypos+'px';
+	char.style.left = ''+xpos+'px';
+	char.style.margin = '10px';
+	char.style.paddingTop = '10px';
+	char.style.width = '15px';
+	char.style.height = '15px';
+	char.style.zIndex = 10000;
+	char.style.opacity = 1;
+	char.style.color = 'black';
+	char.style.backgroundColor = 'black';
+	char.style.border = '0px solid white';
+	char.style.textAlign = 'center';
+	char.id = 'char';
+	char.style.display = 'block';
+}());
+
+(function () {
+	var ground = document.createElement('div');
+	var body = document.getElementsByTagName('body')[0];
+	body.appendChild(ground);
+
+	ground.style.position = 'fixed';
+	ground.style.top = '250px';
+	ground.style.left = '0px';
+	ground.style.margin = '10px';
+	ground.style.paddingTop = '10px';
+	ground.style.width = '300px';
+	ground.style.height = '50px';
+	ground.style.zIndex = 10000;
+	ground.style.opacity = 1;
+	ground.style.color = 'blue';
+	ground.style.backgroundColor = 'green';
+	ground.style.border = '0px solid white';
+	ground.style.textAlign = 'center';
+	ground.id = 'ground';
+	ground.style.display = 'block';
+}());
+
+function move(){
+	if (right==1){
+		if (xpos+playerspeed>=285){
+		}
+		else{
+			xpos=xpos+playerspeed;
+			char.style.left = ''+xpos+'px';
+		}
+	}	
+	if (left==1){
+		if (xpos-playerspeed<=0){
+		}
+		else{
+			xpos=xpos-playerspeed;
+			char.style.left = ''+xpos+'px';
+		}
+	}
+	if (up==1){
+		ypos=ypos+jumpspeed;
+		if (jumpspeed>=0){
+			jumpspeed=jumpspeed-0.5;
+		}
+	}
+	if (up==-1){
+		jumpspeed=0;
+		ypos=ypos-jumpspeed;
+		if (jumpspeed<=0){
+			jumpspeed=jumpspeed+0.5;
+		}
+	}
+}
+
+function jump(){
+	up=-1;
+	function waiting(){
+		up=1;
+	}
+	waiting();
+	function waiting2(){
+		up=-1;
+		function continue1(){
+			colliding=colliding(xpos,ypos,15,15,0,250,300,50);
+			if (colliding){
+				up=0;
+				clearInterval(continue1);
+			}
+		}
+		setInterval(continue1,15);
+	}
+
+	setTimeout(waiting2,700);
+}
+
+function update(){
+	char.style.top = ''+ypos+'px';
+	char.style.left = ''+xpos+'px';
+}
+setInterval(update,2);
+window.addEventListener("keydown",function(event){ 
+	if(event.key=="ArrowRight"){ 
+		right=1; 
+	}
+	if(event.key=="ArrowLeft"){ 
+		left=1; 
+	}
+	if(event.key=="ArrowUp"){ 
+        	jump();
+	}
+});
+
+window.addEventListener("keyup",function(event){ 
+	if(event.key=="ArrowRight"){ 
+		right=0; 
+	}
+	if(event.key=="ArrowLeft"){ 
+		left=0; 
+	}
+});
+
+setInterval(move,15);
